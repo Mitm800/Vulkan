@@ -39,9 +39,6 @@
     <ClCompile Include="lve_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lve_game_object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lve_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
