@@ -12,7 +12,7 @@ namespace lve {
 
 	struct SimplePushConstantData {
 		glm::mat4 transfrom{ 1.f };
-		alignas(16) glm::vec3 color;
+		glm::mat4 normalMatrix{ 1.f };
 	};
 
 	SimpleRenderSystem::SimpleRenderSystem(LveDevice& device, VkRenderPass renderPass) : lveDevice{ device } {
@@ -62,8 +62,9 @@ namespace lve {
 
 		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
-			push.color = obj.color;
-			push.transfrom = projectionview * obj.transform.mat4();
+			auto modelMatrix = obj.transform.mat4();
+			push.transfrom = projectionview * modelMatrix;
+			push.normalMatrix = obj.transform.normalMatrix();
 
 			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(SimplePushConstantData), &push);
 
