@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <array>
 #include<cassert>
+#include <map>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -78,6 +79,16 @@ namespace lve {
 	}
 
 	void PointLightSystem::render(FrameInfo &frameInfo) {
+		std::map<float, LveGameObject::id_t> sorted;
+		for (auto& kv : frameInfo.gameObjects) {
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) continue;
+
+			auto offset = frameInfo.camera.getPositon() - obj.transform.translation;
+			float disSquared = glm::dot(offset, offset);
+			sorted[disSquared] = obj.getId();
+		}
+
 		lvePipeLine->bind(frameInfo.commandBuffer);
 
 		vkCmdBindDescriptorSets(
@@ -88,9 +99,9 @@ namespace lve {
 			&frameInfo.globalDescriptorSet,
 			0, nullptr);
 
-		for (auto& kv : frameInfo.gameObjects) {
-			auto& obj = kv.second;
-			if (obj.pointLight == nullptr) continue;
+		for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+
+			auto& obj = frameInfo.gameObjects.at(it->second);
 
 			PointLightPushConstants push{};
 			push.positions = glm::vec4(obj.transform.translation, 1.f);

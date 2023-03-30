@@ -50,6 +50,7 @@ namespace lve {
 
 		PipelineConfigInfo pipelineConfig{};
 		LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
+		LvePipeline::enableAlphaBlending(pipelineConfig);
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		lvePipeLine = std::make_unique<LvePipeline>(lveDevice, "simple_shader.vert.spv", "simple_shader.frag.spv", pipelineConfig);

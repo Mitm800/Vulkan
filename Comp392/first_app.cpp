@@ -89,8 +89,10 @@ namespace lve {
 				uboBuffers[frameIndex]->flush();
 
 				lveRenderer.beginSwapChainRenderPass(commandBuffer);
+
 				simpleRenderSystem.renderGameObjects(frameInfo);
 				pointLightSystem.render(frameInfo);
+
 				lveRenderer.endSwapChainRenderPass(commandBuffer);
 				lveRenderer.endFrame();
 			}
