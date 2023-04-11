@@ -8,6 +8,7 @@
 #include <glm/gtx/hash.hpp>
 
 #include<cassert>
+#include<iostream>
 #include<cstring>
 #include<unordered_map>
 
@@ -33,7 +34,6 @@ namespace lve {
 	std::unique_ptr<LveModel> LveModel::createModelFromFile(LveDevice& device, const std::string& filepath) {
 		Builder builder{};
 		builder.loadModel(filepath);
-
 		return std::make_unique<LveModel>(device, builder);
 	}
 

@@ -56,7 +56,25 @@ namespace lve {
 		lvePipeLine = std::make_unique<LvePipeline>(lveDevice, "simple_shader.vert.spv", "simple_shader.frag.spv", pipelineConfig);
 	}
 
+	void SimpleRenderSystem::updateGameObjects(FrameInfo& frameInfo, GLFWwindow* window) {
+		glm::vec3 velocity = glm::vec3(0.5f, 0.0f, 0.0f);
 
+		for (auto& kv : frameInfo.gameObjects) {
+			auto& obj = kv.second;
+			if (obj.model == nullptr) continue;
+			if (obj.name != "Ball") continue;
+			
+			
+			controller.moveInPlaneXZ(window, frameInfo.frameTime, obj);
+			//frameInfo.camera.setViewTarget(frameInfo.camera.getPositon(), obj.transform.translation);
+			
+			/*glm::vec3 position = obj.transform.translation + velocity * frameInfo.frameTime;
+			obj.transform.rotation.z += 1.0f * frameInfo.frameTime;
+			obj.transform.translation = position;*/
+			//obj.transform.translation.x = glm::clamp(obj.transform.translation.x, -10.5f, 1.5f);
+			
+		}
+	}
 
 	void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo) {
 		lvePipeLine->bind(frameInfo.commandBuffer);

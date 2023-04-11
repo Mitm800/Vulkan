@@ -26,6 +26,8 @@ namespace lve {
 		loadGameObjects();
 	}
 
+
+		
 	FirstApp::~FirstApp() {}
 
 	void FirstApp::run() {
@@ -52,16 +54,20 @@ namespace lve {
 		PointLightSystem pointLightSystem{ lveDevice, lveRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
 
         LveCamera camera{};
-        camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
+        camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 0.f));
 
         auto viewerObject = LveGameObject::createGameObject();
 		viewerObject.transform.translation.z = -2.5f;
+		viewerObject.transform.translation.y = -.5f;
         KeyboardMovementController cameraController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
+
 		while (!lveWindow.shouldClose()) {
 			glfwPollEvents();
+			
+			
 
             auto newTime = std::chrono::high_resolution_clock::now();
             float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
@@ -79,11 +85,12 @@ namespace lve {
 					frameIndex, frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex], gameObjects
 				};
 
-
+				
 				GlobalUbo ubo{};
 				ubo.projection = camera.getProjection();
 				ubo.view = camera.getView();
 				ubo.inverseView = camera.getInverseView();
+				simpleRenderSystem.updateGameObjects(frameInfo, lveWindow.getGLFWwindow());
 				pointLightSystem.update(frameInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
@@ -104,27 +111,31 @@ namespace lve {
     
 	
 	void FirstApp::loadGameObjects(){
-        std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/flat_vase.obj");
+        std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "models/sphere.obj");
 
-        auto flatVase = LveGameObject::createGameObject();
-		flatVase.model = lveModel;
-		flatVase.transform.translation = { -.5f, .5f, 0.f };
-		flatVase.transform.scale = { 3.f, 1.5f, 3.f };
-		gameObjects.emplace(flatVase.getId(), std::move(flatVase));
-
-		lveModel = LveModel::createModelFromFile(lveDevice, "models/smooth_vase.obj");
-		auto smoothVase = LveGameObject::createGameObject();
-		smoothVase.model = lveModel;
-		smoothVase.transform.translation = { .5f, .5f,	0.f };
-		smoothVase.transform.scale = { 3.f, 1.5f, 3.f };
-		gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
+        auto ball = LveGameObject::createGameObject();
+		ball.model = lveModel;
+		ball.name = "Ball";
+		ball.transform.translation = { .0f, -0.25f, 0.f };
+		ball.transform.scale = { .25f, .25f, .25f };
+		gameObjects.emplace(ball.getId(), std::move(ball));
 
 		lveModel = LveModel::createModelFromFile(lveDevice, "models/quad.obj");
 		auto floor = LveGameObject::createGameObject();
 		floor.model = lveModel;
-		floor.transform.translation = { 0.f, .5f,	0.f };
+		floor.name = "Floor";
+		floor.transform.translation = { 0.f, 0.f, 0.f };
 		floor.transform.scale = { 3.f, 1.f, 3.f };
 		gameObjects.emplace(floor.getId(), std::move(floor));
+
+
+		/*lveModel = LveModel::createModelFromFile(lveDevice, "models/cube.obj");
+		auto cube = LveGameObject::createGameObject();
+		cube.model = lveModel;
+		cube.name = "Cube";
+		cube.transform.translation = { .5f, 0.f, 0.f };
+		cube.transform.scale = { .25f, .25f, .25f };
+		gameObjects.emplace(cube.getId(), std::move(cube));*/
 
 	
 		std::vector<glm::vec3> lightColors{
@@ -133,7 +144,11 @@ namespace lve {
 		  {.1f, 1.f, .1f},
 		  {1.f, 1.f, .1f},
 		  {.1f, 1.f, 1.f},
-		  {1.f, 1.f, 1.f}  
+		  {1.f, 1.f, 1.f},
+		  {1.f, .1f, 1.f},
+		  {1.f, .5f, 1.f},
+		  {.5f, 1.f, 1.f},
+		  {1.f, 1.f, .5f}
 		};
 
 		for (int i = 0; i < lightColors.size(); i++) {

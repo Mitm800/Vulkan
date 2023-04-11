@@ -5,6 +5,7 @@
 
 #include<memory>
 #include<unordered_map>
+#include<string>
 
 namespace lve {
 
@@ -47,6 +48,7 @@ namespace lve {
 
 		std::shared_ptr<LveModel> model{};
 		std::unique_ptr<PointLightComponent> pointLight = nullptr;
+		std::string name;
 
 	private:
 		LveGameObject(id_t objId) : id{objId} {}
