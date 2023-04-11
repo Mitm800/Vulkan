@@ -1,20 +1,58 @@
 #include "keyboard_movement_controller.hpp"
 #include <limits>
+#include <iostream>
 
 namespace lve {
+    static double lastX, lastY, dx, dy;
+
+    static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+
+        dx = xpos - lastX;
+        dy = ypos - lastY;
+               
+        lastX = xpos;
+        lastY = ypos;
+    }
+
     void KeyboardMovementController::moveInPlaneXZ(
         GLFWwindow* window, float dt, LveGameObject& gameObject) {
-        glm::vec3 rotate{ 0 };
-        if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.f;
-        if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.f;
-        if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.f;
-        if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.f;
+        //glm::vec3 rotate{ 0.f };
+        ro = glm::vec3{ 0.f };
 
-        if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
-            gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+       glfwSetCursorPosCallback(window, cursor_position_callback);
+
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwDestroyWindow(window);
+
+       /* if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) ro.y += 1.f;
+        if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) ro.y -= 1.f;
+        if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) ro.x += 1.f;
+        if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) ro.x -= 1.f;*/
+
+        if (dx > 0) { 
+            ro.y += 1.f;
+            dx = 0;
+        }
+        if (dx < 0) {
+            ro.y -= 1.f;
+            dx = 0;
         }
 
-        // limit pitch values between about +/- 85ish degrees
+        if (dy > 0) {
+            ro.x -= 1.f;
+            dy = 0;
+        }
+        if (dy < 0) {
+            ro.x += 1.f;
+            dy = 0;
+        }
+
+        if (glm::dot(ro, ro) > std::numeric_limits<float>::epsilon()) {
+            gameObject.transform.rotation += lookSpeed * dt * glm::normalize(ro);
+        }
+
+        ro = glm::vec3{ 0.f };
+
         gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
         gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y, glm::two_pi<float>());
 
@@ -34,6 +72,7 @@ namespace lve {
         if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
             gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir);
         }
+
 
     }
 }

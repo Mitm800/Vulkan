@@ -4,6 +4,7 @@
 #include"lve_window.hpp"
 
 namespace lve {
+
 	class KeyboardMovementController{
 	public:
         struct KeyMappings {
@@ -23,7 +24,11 @@ namespace lve {
 
         KeyMappings keys{};
         float moveSpeed{ 3.f };
-        float lookSpeed{ 1.5f };
+        float lookSpeed{ 2.5f };
+
+        glm::vec3 ro;
+
 	};
+    static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 }
 

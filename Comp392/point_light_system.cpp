@@ -65,7 +65,7 @@ namespace lve {
     }
 
     void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo) {
-        auto rotateLight = glm::rotate(glm::mat4(1.f), 0.5f * frameInfo.frameTime, { 0.f, -1.f, 0.f });
+        auto rotateLight = glm::rotate(glm::mat4(1.f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
         int lightIndex = 0;
         for (auto& kv : frameInfo.gameObjects) {
             auto& obj = kv.second;
@@ -75,7 +75,6 @@ namespace lve {
 
             // update light position
             obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
-            
             // copy light to ubo
             ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.f);
             ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);

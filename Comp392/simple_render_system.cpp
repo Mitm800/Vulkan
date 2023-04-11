@@ -66,12 +66,6 @@ namespace lve {
 			
 			
 			controller.moveInPlaneXZ(window, frameInfo.frameTime, obj);
-			//frameInfo.camera.setViewTarget(frameInfo.camera.getPositon(), obj.transform.translation);
-			
-			/*glm::vec3 position = obj.transform.translation + velocity * frameInfo.frameTime;
-			obj.transform.rotation.z += 1.0f * frameInfo.frameTime;
-			obj.transform.translation = position;*/
-			//obj.transform.translation.x = glm::clamp(obj.transform.translation.x, -10.5f, 1.5f);
 			
 		}
 	}

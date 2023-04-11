@@ -66,8 +66,6 @@ namespace lve {
 
 		while (!lveWindow.shouldClose()) {
 			glfwPollEvents();
-			
-			
 
             auto newTime = std::chrono::high_resolution_clock::now();
             float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
@@ -90,8 +88,10 @@ namespace lve {
 				ubo.projection = camera.getProjection();
 				ubo.view = camera.getView();
 				ubo.inverseView = camera.getInverseView();
+
 				simpleRenderSystem.updateGameObjects(frameInfo, lveWindow.getGLFWwindow());
 				pointLightSystem.update(frameInfo, ubo);
+
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
@@ -128,16 +128,6 @@ namespace lve {
 		floor.transform.scale = { 3.f, 1.f, 3.f };
 		gameObjects.emplace(floor.getId(), std::move(floor));
 
-
-		/*lveModel = LveModel::createModelFromFile(lveDevice, "models/cube.obj");
-		auto cube = LveGameObject::createGameObject();
-		cube.model = lveModel;
-		cube.name = "Cube";
-		cube.transform.translation = { .5f, 0.f, 0.f };
-		cube.transform.scale = { .25f, .25f, .25f };
-		gameObjects.emplace(cube.getId(), std::move(cube));*/
-
-	
 		std::vector<glm::vec3> lightColors{
 		  {1.f, .1f, .1f},
 		  {.1f, .1f, 1.f},
