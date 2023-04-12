@@ -90,7 +90,7 @@ namespace lve {
 				ubo.inverseView = camera.getInverseView();
 
 				simpleRenderSystem.updateGameObjects(frameInfo, lveWindow.getGLFWwindow());
-				pointLightSystem.update(frameInfo, ubo);
+				pointLightSystem.update(frameInfo, ubo, lveWindow.getGLFWwindow());
 
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();

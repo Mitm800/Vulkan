@@ -26,7 +26,7 @@ namespace lve {
         float moveSpeed{ 3.f };
         float lookSpeed{ 2.5f };
 
-        glm::vec3 ro;
+        glm::vec3 rotate;
 
 	};
     static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);

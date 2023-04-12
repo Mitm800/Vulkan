@@ -19,22 +19,22 @@ namespace lve {
 
         if (glfwGetKey(window, keys.moveForward) == GLFW_PRESS) {
             moveDir += forwardDir;
-            //rotate -= rightDir;
+            rotate -= rightDir;
         }
 
         if (glfwGetKey(window, keys.moveBackward) == GLFW_PRESS) {
             moveDir -= forwardDir;
-            //rotate += rightDir;
+            rotate += rightDir;
         }
 
         if (glfwGetKey(window, keys.moveRight) == GLFW_PRESS) {
             moveDir += rightDir;
-            //rotate += straight;
+            rotate += straight;
         }
          
         if (glfwGetKey(window, keys.moveLeft) == GLFW_PRESS) {
             moveDir -= rightDir;
-            //rotate -= straight;
+            rotate -= straight;
         }
 
         if (glfwGetKey(window, keys.jump) == GLFW_PRESS && gameObject.transform.translation.y == -.25f) {
@@ -52,9 +52,9 @@ namespace lve {
             gameObject.transform.translation += velocity * dt * glm::normalize(moveDir);
         }
 
-        /*if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
+        if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
             gameObject.transform.rotation += rotationSpeed * dt * glm::normalize(rotate);
-        }*/
+        }
 
     }
 }

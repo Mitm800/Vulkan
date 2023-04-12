@@ -17,7 +17,7 @@ namespace lve {
 		PointLightSystem(const PointLightSystem&) = delete;
 		PointLightSystem& operator=(const PointLightSystem&) = delete;
 
-		void update(FrameInfo& frameInfo, GlobalUbo &ubo);
+		void update(FrameInfo& frameInfo, GlobalUbo &ubo, GLFWwindow* window);
 		void render(FrameInfo &frameInfo);
 
 	private:
@@ -28,5 +28,8 @@ namespace lve {
 
 		std::unique_ptr<LvePipeline> lvePipeLine;
 		VkPipelineLayout pipelineLayout;
+		float rotationSpeed = 1.0f;
+		glm::vec3 rotationAxis{ 0.f, -1.f, 0.f };
+		float circumference = 1.f;
 	};
 }

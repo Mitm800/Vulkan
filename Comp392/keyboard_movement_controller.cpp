@@ -17,7 +17,7 @@ namespace lve {
     void KeyboardMovementController::moveInPlaneXZ(
         GLFWwindow* window, float dt, LveGameObject& gameObject) {
         //glm::vec3 rotate{ 0.f };
-        ro = glm::vec3{ 0.f };
+        rotate = glm::vec3{ 0.f };
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
        glfwSetCursorPosCallback(window, cursor_position_callback);
@@ -30,28 +30,28 @@ namespace lve {
         if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) ro.x -= 1.f;*/
 
         if (dx > 0) { 
-            ro.y += 1.f;
+            rotate.y += 1.f;
             dx = 0;
         }
         if (dx < 0) {
-            ro.y -= 1.f;
+            rotate.y -= 1.f;
             dx = 0;
         }
 
         if (dy > 0) {
-            ro.x -= 1.f;
+            rotate.x -= 1.f;
             dy = 0;
         }
         if (dy < 0) {
-            ro.x += 1.f;
+            rotate.x += 1.f;
             dy = 0;
         }
 
-        if (glm::dot(ro, ro) > std::numeric_limits<float>::epsilon()) {
-            gameObject.transform.rotation += lookSpeed * dt * glm::normalize(ro);
+        if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
+            gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
         }
 
-        ro = glm::vec3{ 0.f };
+        rotate = glm::vec3{ 0.f };
 
         gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
         gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y, glm::two_pi<float>());

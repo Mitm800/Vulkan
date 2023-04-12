@@ -64,14 +64,71 @@ namespace lve {
         lvePipeLine = std::make_unique<LvePipeline>(lveDevice, "point_light.vert.spv", "point_light.frag.spv", pipelineConfig);
     }
 
-    void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo) {
-        auto rotateLight = glm::rotate(glm::mat4(1.f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
+    void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo, GLFWwindow* window) {
+        if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+            rotationSpeed += 0.01f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+            rotationSpeed -= 0.01f;
+        }
+
+        auto rotateLight = glm::rotate(glm::mat4(1.f), rotationSpeed * frameInfo.frameTime, rotationAxis);
         int lightIndex = 0;
         for (auto& kv : frameInfo.gameObjects) {
             auto& obj = kv.second;
             if (obj.pointLight == nullptr) continue;
 
             assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified");
+
+
+            //Light Intensity
+            if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
+                obj.pointLight->lightIntensity += 0.005f;
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+                obj.pointLight->lightIntensity -= 0.005f;
+            }
+
+            //Radius
+            if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+                obj.transform.scale.x += 0.0025f;
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+                obj.transform.scale.x -= 0.0025f;
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+                circumference += 0.1 * frameInfo.frameTime;
+                auto rotateLight = glm::rotate(glm::mat4(circumference), (lightIndex * glm::two_pi<float>()) / 10, rotationAxis);
+                obj.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+                circumference -= 0.1 * frameInfo.frameTime;
+                auto rotateLight = glm::rotate(glm::mat4(circumference), (lightIndex * glm::two_pi<float>()) / 10, rotationAxis);
+                obj.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+            }
+
+            //Axis
+            if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+                rotationAxis = { -1.f, 0.f, 0.f };
+                auto rotateLight = glm::rotate(glm::mat4(1.f), (lightIndex * glm::two_pi<float>()) / 10, rotationAxis);
+                obj.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+            }
+            
+            if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+                rotationAxis = { 0.f, 1.f, 0.f };
+                auto rotateLight = glm::rotate(glm::mat4(1.f), (lightIndex * glm::two_pi<float>()) / 10, rotationAxis);
+                obj.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+                rotationAxis = { 0.f, 0.f, 1.f };
+                auto rotateLight = glm::rotate(glm::mat4(1.f), (lightIndex * glm::two_pi<float>()) / 10, rotationAxis);
+                obj.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+            }
 
             // update light position
             obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
